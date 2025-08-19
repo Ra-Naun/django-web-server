@@ -1,0 +1,36 @@
+services:
+  web-server-dev:
+    container_name: web-server-dev
+    build:
+      context: .
+      dockerfile: ./docker/dev/web-server/Dockerfile
+    ports:
+      - 8000:8000
+    restart: always
+    networks:
+      - django-network
+    depends_on:
+      - pgdb
+    volumes:
+      - ./web-server:/web-server
+
+  pgdb:
+    image: library/postgres:15-alpine
+    ports:
+      - 5432:5432
+    restart: always
+    networks:
+      - django-network
+    volumes:
+      - volume-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres_password
+
+volumes:
+  volume-db:
+    driver: local
+
+networks:
+  django-network:
+    driver: bridge
