@@ -1,4 +1,20 @@
 services:
+
+  web-site-dev:
+    container_name: web-site-dev
+    build:
+      context: .
+      dockerfile: ./docker/dev/web-site/Dockerfile
+    ports:
+      - 3000:3000
+    restart: always
+    networks:
+      - django-network
+    depends_on:
+      - web-server-dev
+    volumes:
+      - ./web-client:/usr/src/web-site
+
   web-server-dev:
     container_name: web-server-dev
     build:
@@ -12,7 +28,7 @@ services:
     depends_on:
       - pgdb
     volumes:
-      - ./web-server:/web-server
+      - ./web-server:/usr/src/web-server
 
   pgdb:
     image: library/postgres:15-alpine
